@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #000000, #333333);
+            color: #ffffff;
+        }
+        .card { 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        input {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <h1 class="text-4xl font-bold text-center mb-6">Welcome to the Hackathon Portal</h1>
+    <p class="text-lg text-center mb-8">Join the community, collaborate, and innovate with fellow hackers.</p>
+    
+    <div id="loginContainer" class="w-full max-w-md p-8 rounded-lg shadow-lg card">
+        <h2 class="text-3xl font-bold text-center mb-6">Login</h2>
+        <form id="loginForm">
+            <div class="mb-4">
+                <label>Email</label>
+                <input type="email" id="loginEmail" class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-4">
+                <label>Password</label>
+                <input type="password" id="loginPassword" class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 py-2 rounded-lg hover:bg-indigo-700 transition">Login</button>
+        </form>
+        <p class="text-center mt-4">Don't have an account? <a href="#" id="showSignup" class="text-green-300 hover:underline">Sign up</a></p>
+    </div>
+
+    <div id="signupContainer" class="w-full max-w-md p-8 rounded-lg shadow-lg card hidden">
+        <h2 class="text-3xl font-bold text-center mb-6">Sign Up</h2>
+        <form id="signupForm">
+            <div class="mb-4">
+                <label>Name</label>
+                <input type="text" id="signupName" class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-4">
+                <label>Email</label>
+                <input type="email" id="signupEmail" class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-4">
+                <label>Password</label>
+                <input type="password" id="signupPassword" class="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Create a password" required>
+            </div>
+            <button type="submit" class="w-full bg-green-600 py-2 rounded-lg hover:bg-green-700 transition">Sign Up</button>
+        </form>
+        <p class="text-center mt-4">Already have an account? <a href="#" id="showLogin" class="text-green-300 hover:underline">Login</a></p>
+    </div>
+
+    <script>
+        document.getElementById('showSignup').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('signupContainer').classList.remove('hidden');
+            document.getElementById('loginContainer').classList.add('hidden');
+        });
+        
+        document.getElementById('showLogin').addEventListener('click', function(event) {
+            event.preventDefault();
+            document.getElementById('signupContainer').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Login successful');
+            window.location.href = 'http://127.0.0.1:3000/project/s3.html';
+        });
+        
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Signup successful');
+            document.getElementById('signupContainer').classList.add('hidden');
+            document.getElementById('loginContainer').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Idea Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #121212, #1e1e1e);
+            color: white;
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #467da1;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            margin-top: 5px;
+            background-color: #222;
+            color: white;
+        }
+        .output-box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            background-color: #181818;
+            color: #ddd;
+            text-align: left;
+        }
+        .loading {
+            color: #3777a2;
+            font-weight: bold;
+        }
+        button {
+            padding: 12px 20px;
+            background: #467da1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #467da1;
+        }
+        button:disabled {
+            background-color: #444;
+        }
+    </style>
+    <link rel="icon" href="data:,">
+</head>
+<body>
+
+    <h1>Hackathon Idea Generator</h1>
+
+    <div class="input-container">
+        <div class="input-group">
+            <h3>Skill Level</h3>
+            <input type="text" id="inputA" placeholder="Enter Skill Level (e.g., Beginner, Intermediate, Advanced)" />
+        </div>
+
+        <div class="input-group">
+            <h3>Theme of Hackathon</h3>
+            <input type="text" id="inputB" placeholder="Enter Hackathon Theme (e.g., AI, Blockchain, Healthcare)" />
+        </div>
+
+        <div class="input-group">
+            <h3>Number of Members (Max: 10)</h3>
+            <input type="number" id="inputC" placeholder="Enter Number of Members" min="1" max="10" />
+        </div>
+
+        <div class="input-group">
+            <h3>Days Remaining (Max: 15)</h3>
+            <input type="number" id="inputD" placeholder="Enter Days Remaining" min="1" max="15" />
+        </div>
+
+        <div class="input-group">
+            <h3>Level of Hackathon</h3>
+            <input type="text" id="inputE" placeholder="Enter Level (e.g., Local, National, International)" />
+        </div>
+    </div>
+    
+    <button onclick="generateIdea()">Generate Hackathon Idea</button>
+
+    <div class="output-box" id="results">Hackathon ideas will be displayed here...</div>
+
+    <script>
+        async function fetchGeminiData(formattedText) {
+            const API_KEY = "AIzaSyC18q88REddEtjgJMq5Ptwb6v3q33HDXms"; // Add your API key here
+            if (!API_KEY) {
+                return "❌ Error: API key is missing!";
+            }
+
+            const BASE_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+            const body = JSON.stringify({
+                contents: [{ 
+                    parts: [{ text: formattedText }]
+                }]
+            });
+
+            try {
+                const response = await fetch(BASE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: body,
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    return data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("\n") || "No response generated.";
+                } else {
+                    return `❌ Error: ${data.error?.message || 'Unknown error'}`;
+                }
+            } catch (error) {
+                return `❌ Request failed: ${error.message}`;
+            }
+        }
+
+        function generateIdea() {
+            const a = document.getElementById("inputA").value.trim();
+            const b = document.getElementById("inputB").value.trim();
+            const c = document.getElementById("inputC").value.trim();
+            const d = document.getElementById("inputD").value.trim();
+            const e = document.getElementById("inputE").value.trim();
+
+            if (!a || !b || !c || !d || !e) {
+                alert("⚠ Please enter all five inputs.");
+                return;
+            }
+
+            const teamSize = parseInt(c, 10);
+            const daysRemaining = parseInt(d, 10);
+
+            if (teamSize > 10) {
+                alert("⚠ Warning: Team size cannot exceed 10 members.");
+                return;
+            }
+
+            if (daysRemaining > 15) {
+                alert("⚠ Warning: Days remaining cannot exceed 15.");
+                return;
+            }
+
+            const formattedText = `These are the skills: ${a}. The theme of the hackathon is: ${b}. The team consists of ${c} members. There are ${d} days remaining, and it is a ${e}-level hackathon. Suggest a project idea accordingly and generate a flowchart for each idea.`;
+
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = '<p class="loading">⏳ Generating hackathon idea...</p>';
+
+            fetchGeminiData(formattedText).then(responseText => {
+                resultsDiv.innerHTML = `<p><strong>🚀 Hackathon Idea:</strong><br>${responseText.replace(/\n/g, "<br>")}</p>`;
+            });
+        }
+    </script>
+
+</body>
+</html>
